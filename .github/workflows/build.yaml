@@ -1,42 +1,41 @@
 name: build
 
 on:
-push:
-workflow_dispatch:
+  push:
+  workflow_dispatch:
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-steps:
-  - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  - name: Install dependencies
-    run: |
-      sudo apt-get update
-      sudo apt-get install -y gcc-arm-none-eabi cmake make git
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi cmake make git
 
-  - name: Clone Pico SDK
-    run: |
-      git clone -b 1.5.0 https://github.com/raspberrypi/pico-sdk
-      cd pico-sdk
-      git submodule update --init lib/tinyusb
+      - name: Clone Pico SDK
+        run: |
+          git clone -b 1.5.0 https://github.com/raspberrypi/pico-sdk
+          cd pico-sdk
+          git submodule update --init lib/tinyusb
 
-  - name: Configure
-    run: |
-      cmake -DPICO_SDK_PATH=$PWD/pico-sdk -DPICO_STDIO_USB=ON .
+      - name: Configure
+        run: |
+          cmake -DPICO_SDK_PATH=$PWD/pico-sdk -DPICO_STDIO_USB=ON .
 
-  - name: Build
-    run: |
-      make
+      - name: Build
+        run: |
+          make
 
-  - name: Upload artifacts
-    uses: actions/upload-artifact@v4
-    with:
-      name: pico_serprog
-      path: |
-        README.md
-        COPYING
-        pico_serprog.elf
-        pico_serprog.uf2
-
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pico_serprog
+          path: |
+            README.md
+            COPYING
+            pico_serprog.elf
+            pico_serprog.uf2
